@@ -1,11 +1,11 @@
 # GitHub Action - Upload release.nix
 
 **Problem:**
-GitHub source archives do not include submodules.
-If a project depends on submodules,
-we can only import Nix expressions from a full Git clone;
-we cannot import Nix expressions from a source tarball.
+Your repository includes Nix expressions that depend on submodules.
+GitHub source archives do not include submodules,
+so you need a clone of the repository to import the expressions.
 
 **Solution:**
-Upload a `release.nix` asset to every release with the revision and hash,
-so that we can use `fetchgit` to get a full clone and import expressions.
+Upload a `release.nix` lock file for each release,
+containing the revision and the hash,
+so that you can use `fetchgit` to clone the repository with submodules and import expressions.

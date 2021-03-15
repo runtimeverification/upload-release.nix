@@ -1,0 +1,24 @@
+name: 'Upload release.nix'
+description: 'Upload a Nix lock file for releases'
+runs:
+  using: 'composite'
+  steps:
+    - name: Install Nix
+      uses: cachix/install-nix-action@v12
+
+    - name: Create release expression
+      run: |
+        ${{ github.action_path }}/release.sh \
+          "https://github.com/${{ github.repository }}" \
+          "$GITHUB_SHA" \
+          > release.nix
+
+    - name: Upload release expression
+      uses: actions/upload-release-asset@v1
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      with:
+        upload_url: ${{ github.event.release.upload_url }}
+        asset_path: ./release.nix
+        asset_name: release.nix
+        asset_content_type: text/plain
