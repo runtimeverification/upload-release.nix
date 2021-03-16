@@ -1,13 +1,14 @@
 #!/usr/bin/env nix-shell
 #!nix-shell shell.nix -i bash
 
-url="${1:?}"; shift
-rev="${1:?}"; shift
-source_json="$(mktemp "release.sh-XXXXXXXXXX.json")"
-trap 'rm -f "$source_json"' INT EXIT
-nix-prefetch-git --url "$url" --rev "$rev" --fetch-submodules > "$source_json"
-sha256=$(jq -r '.sha256' < "$source_json")
-cat <<EOF
+url="https://github.com/$GITHUB_REPOSITORY"
+rev="$GITHUB_SHA"
+trap 'rm -f "$release_json" "$release_nix"' INT EXIT
+release_json="$(mktemp "release-XXXXXXXXXX.json")"
+release_nix="$(mktemp "release-XXXXXXXXXX.nix")"
+nix-prefetch-git --url "$url" --rev "$rev" --fetch-submodules > "$release_json"
+sha256=$(jq -r '.sha256' < "$release_json")
+cat > "$release_nix" <<EOF
 {
   url = "$url";
   sha256 = "$sha256";
@@ -15,3 +16,4 @@ cat <<EOF
   fetchSubmodules = true;
 }
 EOF
+hub release edit -m "" -a "$release_nix#release.nix" "$GITHUB_REF"
