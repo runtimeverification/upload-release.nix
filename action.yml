@@ -1,9 +1,13 @@
 name: 'Upload release.nix'
 description: 'Upload a Nix lock file for releases'
+inputs:
+  token:
+    description: "GitHub token used to upload release assets"
+    required: true
 runs:
   using: 'composite'
   steps:
     - shell: bash
       env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        GITHUB_TOKEN: ${{ inputs.token }}
       run: ${{ github.action_path }}/release.sh
