@@ -17,4 +17,4 @@ cat > "$release_nix" <<EOF
   fetchSubmodules = true;
 }
 EOF
-hub release edit -m "" -a "$release_nix#release.nix" "${GITHUB_REF#refs/tags/}"
+gh release upload "${GITHUB_REF#refs/tags/}" "$release_nix#release.nix"

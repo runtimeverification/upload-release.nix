@@ -9,5 +9,5 @@ runs:
   steps:
     - shell: bash
       env:
-        GITHUB_TOKEN: ${{ inputs.token }}
+        GH_TOKEN: ${{ inputs.token }}
       run: ${{ github.action_path }}/release.sh
